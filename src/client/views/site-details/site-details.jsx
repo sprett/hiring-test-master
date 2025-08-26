@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Page, Heading, Text, Button, Card, Spacer } from '@oliasoft-open-source/react-ui-library';
 import { useParams, useNavigate } from 'react-router-dom';
 import { oilRigsLoaded } from "store/entities/oil-rigs/oil-rigs";
+import { sitesLoaded } from "store/entities/sites/sites";
 import styles from './site-details.module.less';
 import { FiMapPin } from 'react-icons/fi';
 
@@ -21,7 +22,11 @@ const SiteDetails = () => {
     if (!oilRigs.length) {
       dispatch(oilRigsLoaded());
     }
-  }, [dispatch, oilRigs.length]);
+    // Load sites if not already loaded
+    if (!sites.length) {
+      dispatch(sitesLoaded());
+    }
+  }, [dispatch, oilRigs.length, sites.length]);
 
   useEffect(() => {
     if (sites.length && oilRigs.length) {
