@@ -1,42 +1,121 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {connect} from 'react-redux';
-import {Button, Card, Heading, Column, Row} from '@oliasoft-open-source/react-ui-library';
-import {sitesLoaded} from "store/entities/sites/sites";
+import {Button} from '@oliasoft-open-source/react-ui-library';
+import {sitesLoaded, sitesReceived} from "store/entities/sites/sites";
+import { SkeletonSitesGrid, SkeletonButton } from '../skeleton';
 import styles from './sites.module.less';
+import { useNavigate } from 'react-router-dom';
+import { FiArrowRight } from 'react-icons/fi';
 
-const Sites = ({list, loading, sitesLoaded}) => {
-  return (
-    <Card
-      heading={
-        <Heading>List of oil sites</Heading>
+const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
+  const [isReversed, setIsReversed] = useState(() => {
+    // Load sort preference from localStorage on component mount
+    const savedSort = localStorage.getItem('sitesSortReversed');
+    return savedSort ? JSON.parse(savedSort) : false;
+  });
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const navigate = useNavigate();
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const savedSites = localStorage.getItem('sites');
+    if (savedSites && list.length === 0) {
+      try {
+        setIsRestoring(true);
+        const parsedSites = JSON.parse(savedSites);
+        sitesReceived(parsedSites);
+        setIsRestoring(false);
+      } catch (error) {
+        console.warn('Failed to parse saved sites from localStorage');
+        setIsRestoring(false);
       }
-    >
-      <Row>
-        <Column width={200}>
+    }
+  }, []);
+
+  // Save data to localStorage when received from API
+  const handleSitesLoaded = () => {
+    setShowSkeleton(true);
+    sitesLoaded();
+    
+    // Ensure skeleton shows for at least 2 seconds
+    setTimeout(() => {
+      setShowSkeleton(false);
+      // Save to localStorage after successful load
+      if (list.length > 0) {
+        localStorage.setItem('sites', JSON.stringify(list));
+      }
+    }, 2000);
+  };
+
+  // useMemo here for state management
+  const sortedSites = useMemo(() => [...list].sort((a, b) => 
+    isReversed 
+      ? b.name.localeCompare(a.name)
+      : a.name.localeCompare(b.name)
+  ), [list, isReversed]);
+
+  const toggleSort = () => {
+    const newSortState = !isReversed;
+    setIsReversed(newSortState);
+    // Save sort preference to localStorage
+    localStorage.setItem('sitesSortReversed', JSON.stringify(newSortState));
+  };
+
+  const handleSiteClick = (siteId) => {
+    navigate(`/site/${siteId}`);
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.title}>List of oil sites</div>
+        <div className={styles.controls}>
+          {showSkeleton ? (
+            <SkeletonButton />
+          ) : (
+            <Button
+              label="Load sites"
+              onClick={handleSitesLoaded}
+              loading={loading}
+              disabled={loading || showSkeleton}
+              className={styles.loadButton}
+            />
+          )}
+        </div>
+      </div>
+
+      {list.length > 0 && (
+        <div className={styles.sortSection}>
           <Button
-            label="Load sites"
-            onClick={sitesLoaded}
-            loading={loading}
-            disabled={loading}
+            label={`Sort ${isReversed ? 'Z-A' : 'A-Z'}`}
+            onClick={toggleSort}
+            variant="secondary"
+            className={styles.sortButton}
           />
-        </Column>
-        <Column>
-          <div className={styles.sitesList}>
-            {list.length ? (
-              <ul>
-                {list.map((site, i) => (
-                  <li key={i}>
-                    {site.name}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <em>None loaded</em>
-            )}
+        </div>
+      )}
+
+      <div className={styles.sitesList}>
+        {showSkeleton ? (
+          <SkeletonSitesGrid count={6} />
+        ) : list.length ? (
+          <div className={styles.sitesGrid}>
+            {sortedSites.map((site, i) => (
+              <div key={i} className={styles.siteCard} onClick={() => handleSiteClick(site.id)}>
+                <div className={styles.siteName}>{site.name}</div>
+                <div className={styles.siteCountry}>{site.country}</div>
+                <div className={styles.siteId}>Site ID: {site.id}</div>
+                <div className={styles.siteRigs}>{site.oilRigs.length} Oil Rigs</div>
+              </div>
+            ))}
           </div>
-        </Column>
-      </Row>
-    </Card>
+        ) : (
+          <div className={styles.noSites}>None loaded</div>
+        )}
+      </div>
+      <div className={styles.oilRigsLink} onClick={() => navigate('/oil-rigs')}>View oil rigs </div>
+    </div>
   );
 }
 
@@ -50,6 +129,7 @@ const mapStateToProps = ({entities}) => {
 
 const mapDispatchToProps = {
   sitesLoaded,
+  sitesReceived,
 };
 
 const ConnectedSites = connect(

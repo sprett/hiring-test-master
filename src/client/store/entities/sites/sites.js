@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { apiCallBegan } from 'client/store/middleware/api/api';
+import { createSlice } from "@reduxjs/toolkit";
+import { apiCallBegan } from "client/store/middleware/api/api";
 
 const slice = createSlice({
-  name: 'sites',
+  name: "sites",
   initialState: {
     loading: false,
     list: [],
@@ -21,17 +21,15 @@ const slice = createSlice({
   },
 });
 
-export const {
-  sitesRequested,
-  sitesReceived,
-  sitesRequestFailed,
-} = slice.actions;
+export const { sitesRequested, sitesReceived, sitesRequestFailed } =
+  slice.actions;
 export default slice.reducer;
 
-const url = '/sites';
-export const sitesLoaded = () => apiCallBegan({
-  url,
-  onStart: sitesRequested.type,
-  onSuccess: sitesReceived.type,
-  onError: sitesRequestFailed.type,
-});
+const url = "/sites";
+export const sitesLoaded = () =>
+  apiCallBegan({
+    url,
+    onStart: sitesRequested.type,
+    onSuccess: sitesReceived.type,
+    onError: sitesRequestFailed.type,
+  });
