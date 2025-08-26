@@ -4,7 +4,7 @@ import { Page, Button } from '@oliasoft-open-source/react-ui-library';
 import { OilRigs } from 'client/components/oil-rigs/oil-rigs';
 import styles from './oil-rigs.module.less';
 
-export const OilRigsView = ({}) => {
+export const OilRigsView = () => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {connect} from 'react-redux';
 import {Button} from '@oliasoft-open-source/react-ui-library';
 import {sitesLoaded, sitesReceived} from "store/entities/sites/sites";
@@ -26,7 +26,7 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
         sitesReceived(parsedSites);
         setIsRestoring(false);
       } catch (error) {
-        console.warn('Failed to parse saved sites from localStorage');
+        console.warn('Failed to fetch saved sites from localStorage');
         setIsRestoring(false);
       }
     }
@@ -50,12 +50,12 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
     }
   }, [list]);
 
-  // useMemo here for state management
-  const sortedSites = useMemo(() => [...list].sort((a, b) => 
+  // Sort sites based on current sort state
+  const sortedSites = [...list].sort((a, b) => 
     isReversed 
       ? b.name.localeCompare(a.name)
       : a.name.localeCompare(b.name)
-  ), [list, isReversed]);
+  );
 
   const toggleSort = () => {
     const newSortState = !isReversed;
@@ -82,9 +82,6 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
             variant="secondary"
             className={styles.sortButton}
           />
-          {showSkeleton ? (
-            <SkeletonButton />
-          ) : (
             <Button
               label="Load sites"
               onClick={handleSitesLoaded}
@@ -92,15 +89,12 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
               disabled={loading || showSkeleton}
               className={styles.loadButton}
             />
-          )}
         </div>
       )}
 
       {list.length === 0 && (
         <div className={styles.sortSection}>
-          {showSkeleton ? (
-            <SkeletonButton />
-          ) : (
+         
             <Button
               label="Load sites"
               onClick={handleSitesLoaded}
@@ -108,7 +102,6 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
               disabled={loading || showSkeleton}
               className={styles.loadButton}
             />
-          )}
         </div>
       )}
 

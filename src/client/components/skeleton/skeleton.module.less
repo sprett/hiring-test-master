@@ -36,38 +36,25 @@
 .skeletonSitesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  gap: 24px;
+  margin-top: 24px;
 }
 
 .skeletonSiteCard {
-  padding: 16px;
   border: 1px solid #e0e0e0;
+  background: #ffffff2d;
   border-radius: 8px;
-  background: white;
+  padding: 24px;
+  transition: all 0.2s ease;
   cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .skeletonSiteCard:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.skeletonSiteHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.skeletonSiteMainInfo {
-  margin-bottom: 12px;
-}
-
-.skeletonSiteDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  border-color: #ccc;
+  background: #ffffff6e;
 }
 
 .skeletonOilRigsGrid {
@@ -94,6 +81,8 @@
 .skeletonOilRigDetails {
   margin-top: 8px;
 }
+
+
 
 @keyframes shimmer {
   0% {

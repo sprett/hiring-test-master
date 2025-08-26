@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { sitesLoaded } from 'client/store/entities/sites/sites';
+import { sitesLoaded } from "store/entities/sites/sites";
 import styles from './chart.module.less';
 
 export const Chart = () => {
@@ -16,8 +16,7 @@ export const Chart = () => {
   // Transform data for the chart
   const chartData = sites.map(site => ({
     name: site.name,
-    oilRigs: site.oilRigs.length,
-    country: site.country
+    oilRigs: site.oilRigs.length
   }));
 
   if (loading) {

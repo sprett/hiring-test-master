@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button } from '@oliasoft-open-source/react-ui-library';
 import { useNavigate } from 'react-router-dom';
 import { oilRigsLoaded } from "store/entities/oil-rigs/oil-rigs";
 import { Sites } from 'client/components/sites/sites';

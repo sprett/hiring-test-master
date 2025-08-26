@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {connect} from 'react-redux';
 import {Button, Heading, Text} from '@oliasoft-open-source/react-ui-library';
 import {oilRigsLoaded, oilRigsReceived} from "store/entities/oil-rigs/oil-rigs";
-import { SkeletonOilRigsGrid, SkeletonButton } from '../skeleton';
+
 import styles from './oil-rigs.module.less';
 
 const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
@@ -12,7 +12,6 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
     return savedSort ? JSON.parse(savedSort) : false;
   });
   const [isRestoring, setIsRestoring] = useState(false);
-  const [showSkeleton, setShowSkeleton] = useState(false);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -32,13 +31,7 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
 
   // Save data to localStorage when received from API
   const handleOilRigsLoaded = () => {
-    setShowSkeleton(true);
     oilRigsLoaded();
-    
-    // Ensure skeleton shows for at least 2 seconds
-    setTimeout(() => {
-      setShowSkeleton(false);
-    }, 2000);
   };
 
   // Save to localStorage whenever list changes (when API response comes back)
@@ -65,16 +58,12 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
     <div className={styles.container}>
       <div className={styles.controls}>
         <div className={styles.loadSection}>
-          {showSkeleton ? (
-            <SkeletonButton />
-          ) : (
-            <Button
-              label="Load oil rigs"
-              onClick={handleOilRigsLoaded}
-              loading={loading}
-              disabled={loading || showSkeleton}
-            />
-          )}
+          <Button
+            label="Load oil rigs"
+            onClick={handleOilRigsLoaded}
+            loading={loading}
+            disabled={loading}
+          />
           {isRestoring && (
             <div className={styles.restoringMessage}>
               Restoring oil rigs...
@@ -93,9 +82,7 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
       </div>
       
       <div className={styles.content}>
-        {showSkeleton ? (
-          <SkeletonOilRigsGrid count={8} />
-        ) : list.length ? (
+        {list.length ? (
           <>
             <Heading className={styles.sectionTitle}>Available Oil Rigs</Heading>
             <div className={styles.oilRigsGrid}>
