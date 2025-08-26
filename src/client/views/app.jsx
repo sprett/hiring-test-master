@@ -4,6 +4,8 @@ import { TopBar } from "@oliasoft-open-source/react-ui-library";
 import Logo from "client/views/images/logo.svg";
 
 import { Main } from "client/views/main/main";
+import { OilRigsView } from "client/views/oil-rigs/oil-rigs";
+import { SiteDetails } from "client/views/site-details/site-details";
 
 export const App = () => {
   return (
@@ -15,6 +17,8 @@ export const App = () => {
       />
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/oil-rigs" element={<OilRigsView />} />
+        <Route path="/site/:siteId" element={<SiteDetails />} />
       </Routes>
     </>
   );
