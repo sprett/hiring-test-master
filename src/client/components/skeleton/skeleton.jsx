@@ -56,17 +56,26 @@ export const SkeletonSitesGrid = ({ count = 6, className = '' }) => (
   <div className={`${styles.skeletonSitesGrid} ${className}`}>
     {Array.from({ length: count }).map((_, index) => (
       <div key={index} className={styles.skeletonSiteCard}>
-        <div className={styles.skeletonSiteHeader}>
-          <Skeleton  className={styles.skeletonSiteName} />
-          <Skeleton  className={styles.skeletonSiteRigs} />
-        </div>
-        <div className={styles.skeletonSiteMainInfo}>
-          <Skeleton  className={styles.skeletonSiteCountry} />
-        </div>
-        <div className={styles.skeletonSiteDetails}>
-          <Skeleton  className={styles.skeletonSiteId} />
-          <Skeleton  className={styles.skeletonSiteDescription} />
-        </div>
+        <Skeleton 
+          height="24px" 
+          width="80%" 
+          className={styles.skeletonSiteName} 
+        />
+        <Skeleton 
+          height="16px" 
+          width="60%" 
+          className={styles.skeletonSiteCountry} 
+        />
+        <Skeleton 
+          height="12px" 
+          width="90%" 
+          className={styles.skeletonSiteId} 
+        />
+        <Skeleton 
+          height="14px" 
+          width="40%" 
+          className={styles.skeletonSiteRigs} 
+        />
       </div>
     ))}
   </div>
@@ -86,6 +95,6 @@ export const SkeletonOilRigsGrid = ({ count = 8, className = '' }) => (
       </div>
     ))}
   </div>
-);
+ );
 
 export default Skeleton;

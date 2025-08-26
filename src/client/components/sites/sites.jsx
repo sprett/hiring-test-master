@@ -26,7 +26,7 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
         sitesReceived(parsedSites);
         setIsRestoring(false);
       } catch (error) {
-        console.warn('Failed to parse saved sites from localStorage');
+        console.warn('Failed to fetch saved sites from localStorage');
         setIsRestoring(false);
       }
     }
@@ -82,9 +82,6 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
             variant="secondary"
             className={styles.sortButton}
           />
-          {showSkeleton ? (
-            <SkeletonButton />
-          ) : (
             <Button
               label="Load sites"
               onClick={handleSitesLoaded}
@@ -92,15 +89,12 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
               disabled={loading || showSkeleton}
               className={styles.loadButton}
             />
-          )}
         </div>
       )}
 
       {list.length === 0 && (
         <div className={styles.sortSection}>
-          {showSkeleton ? (
-            <SkeletonButton />
-          ) : (
+         
             <Button
               label="Load sites"
               onClick={handleSitesLoaded}
@@ -108,7 +102,6 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
               disabled={loading || showSkeleton}
               className={styles.loadButton}
             />
-          )}
         </div>
       )}
 
