@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Page, Heading, Text, Button, Card, Spacer } from '@oliasoft-open-source/react-ui-library';
+import { Page, Heading, Text, Button } from '@oliasoft-open-source/react-ui-library';
 import { useParams, useNavigate } from 'react-router-dom';
 import { oilRigsLoaded } from "store/entities/oil-rigs/oil-rigs";
 import { sitesLoaded } from "store/entities/sites/sites";

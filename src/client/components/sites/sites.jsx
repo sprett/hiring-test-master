@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {connect} from 'react-redux';
 import {Button} from '@oliasoft-open-source/react-ui-library';
 import {sitesLoaded, sitesReceived} from "store/entities/sites/sites";
@@ -50,12 +50,12 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
     }
   }, [list]);
 
-  // useMemo here for state management
-  const sortedSites = useMemo(() => [...list].sort((a, b) => 
+  // Sort sites based on current sort state
+  const sortedSites = [...list].sort((a, b) => 
     isReversed 
       ? b.name.localeCompare(a.name)
       : a.name.localeCompare(b.name)
-  ), [list, isReversed]);
+  );
 
   const toggleSort = () => {
     const newSortState = !isReversed;

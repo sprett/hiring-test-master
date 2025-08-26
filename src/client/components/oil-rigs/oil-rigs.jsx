@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {connect} from 'react-redux';
 import {Button, Heading, Text} from '@oliasoft-open-source/react-ui-library';
 import {oilRigsLoaded, oilRigsReceived} from "store/entities/oil-rigs/oil-rigs";
