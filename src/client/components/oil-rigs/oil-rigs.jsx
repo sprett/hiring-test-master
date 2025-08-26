@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {connect} from 'react-redux';
-import {Button, Card, Heading, Column, Row, Text} from '@oliasoft-open-source/react-ui-library';
+import {Button, Heading, Text} from '@oliasoft-open-source/react-ui-library';
 import {oilRigsLoaded, oilRigsReceived} from "store/entities/oil-rigs/oil-rigs";
 import { SkeletonOilRigsGrid, SkeletonButton } from '../skeleton';
 import styles from './oil-rigs.module.less';
@@ -38,12 +38,15 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
     // Ensure skeleton shows for at least 2 seconds
     setTimeout(() => {
       setShowSkeleton(false);
-      // Save to localStorage after successful load
-      if (list.length > 0) {
-        localStorage.setItem('oilRigs', JSON.stringify(list));
-      }
     }, 2000);
   };
+
+  // Save to localStorage whenever list changes (when API response comes back)
+  useEffect(() => {
+    if (list.length > 0) {
+      localStorage.setItem('oilRigs', JSON.stringify(list));
+    }
+  }, [list]);
 
   const sortedOilRigs = [...list].sort((a, b) => 
     isReversed 
@@ -59,13 +62,9 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
   };
 
   return (
-    <Card
-      heading={
-        <Heading>List of oil rigs</Heading>
-      }
-    >
-      <Row>
-        <Column width={200}>
+    <div className={styles.container}>
+      <div className={styles.controls}>
+        <div className={styles.loadSection}>
           {showSkeleton ? (
             <SkeletonButton />
           ) : (
@@ -77,44 +76,45 @@ const OilRigs = ({list, loading, oilRigsLoaded, oilRigsReceived}) => {
             />
           )}
           {isRestoring && (
-            <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
-              Restoring from cache...
+            <div className={styles.restoringMessage}>
+              Restoring oil rigs...
             </div>
           )}
-        </Column>
-        <Column>
-          {list.length > 0 && (
-            <Button
-              label={`Sort ${isReversed ? 'Z-A' : 'A-Z'}`}
-              onClick={toggleSort}
-              variant="secondary"
-              style={{ marginBottom: '16px' }}
-            />
-          )}
-          <div className={styles.oilRigsList}>
-            {showSkeleton ? (
-              <SkeletonOilRigsGrid count={8} />
-            ) : list.length ? (
-              <div className={styles.oilRigsGrid}>
-                {sortedOilRigs.map((oilRig, i) => (
-                  <div key={i} className={styles.oilRigCard}>
-                    <div className={styles.oilRigHeader}>
-                      <Text>{oilRig.name}</Text>
-                      <Text>{oilRig.manufacturer}</Text>
-                    </div>
-                    <div className={styles.oilRigDetails}>
-                      <Text>ID: {oilRig.id}</Text>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <em>None loaded</em>
-            )}
+        </div>
+        
+        {list.length > 0 && (
+          <Button
+            label={`Sort ${isReversed ? 'Z-A' : 'A-Z'}`}
+            onClick={toggleSort}
+            variant="secondary"
+            className={styles.sortButton}
+          />
+        )}
+      </div>
+      
+      <div className={styles.content}>
+        {showSkeleton ? (
+          <SkeletonOilRigsGrid count={8} />
+        ) : list.length ? (
+          <>
+            <Heading className={styles.sectionTitle}>Available Oil Rigs</Heading>
+            <div className={styles.oilRigsGrid}>
+              {sortedOilRigs.map((oilRig, i) => (
+                <div key={i} className={styles.oilRigCard}>
+                  <div className={styles.rigName}>{oilRig.name}</div>
+                  <div className={styles.rigManufacturer}>{oilRig.manufacturer}</div>
+                  <div className={styles.rigId}>ID: {oilRig.id}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className={styles.noRigs}>
+            <Text>No oil rigs loaded yet. Click "Load oil rigs" to get started.</Text>
           </div>
-        </Column>
-      </Row>
-    </Card>
+        )}
+      </div>
+    </div>
   );
 }
 

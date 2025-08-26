@@ -5,7 +5,6 @@ import {sitesLoaded, sitesReceived} from "store/entities/sites/sites";
 import { SkeletonSitesGrid, SkeletonButton } from '../skeleton';
 import styles from './sites.module.less';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi';
 
 const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
   const [isReversed, setIsReversed] = useState(() => {
@@ -41,12 +40,15 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
     // Ensure skeleton shows for at least 2 seconds
     setTimeout(() => {
       setShowSkeleton(false);
-      // Save to localStorage after successful load
-      if (list.length > 0) {
-        localStorage.setItem('sites', JSON.stringify(list));
-      }
     }, 2000);
   };
+
+  // Save to localStorage whenever list changes (when API response comes back)
+  useEffect(() => {
+    if (list.length > 0) {
+      localStorage.setItem('sites', JSON.stringify(list));
+    }
+  }, [list]);
 
   // useMemo here for state management
   const sortedSites = useMemo(() => [...list].sort((a, b) => 
@@ -70,7 +72,16 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.title}>List of oil sites</div>
-        <div className={styles.controls}>
+      </div>
+
+      {list.length > 0 && (
+        <div className={styles.sortSection}>
+          <Button
+            label={`Sort ${isReversed ? 'Z-A' : 'A-Z'}`}
+            onClick={toggleSort}
+            variant="secondary"
+            className={styles.sortButton}
+          />
           {showSkeleton ? (
             <SkeletonButton />
           ) : (
@@ -83,16 +94,21 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
             />
           )}
         </div>
-      </div>
+      )}
 
-      {list.length > 0 && (
+      {list.length === 0 && (
         <div className={styles.sortSection}>
-          <Button
-            label={`Sort ${isReversed ? 'Z-A' : 'A-Z'}`}
-            onClick={toggleSort}
-            variant="secondary"
-            className={styles.sortButton}
-          />
+          {showSkeleton ? (
+            <SkeletonButton />
+          ) : (
+            <Button
+              label="Load sites"
+              onClick={handleSitesLoaded}
+              loading={loading}
+              disabled={loading || showSkeleton}
+              className={styles.loadButton}
+            />
+          )}
         </div>
       )}
 
@@ -114,7 +130,10 @@ const Sites = ({list, loading, sitesLoaded, sitesReceived}) => {
           <div className={styles.noSites}>None loaded</div>
         )}
       </div>
-      <div className={styles.oilRigsLink} onClick={() => navigate('/oil-rigs')}>View oil rigs </div>
+      <div className={styles.navigationLinks}>
+        <div className={styles.oilRigsLink} onClick={() => navigate('/oil-rigs')}>View oil rigs</div>
+        <div className={styles.oilRigsLink} onClick={() => navigate('/chart')}>View chart</div>
+      </div>
     </div>
   );
 }
