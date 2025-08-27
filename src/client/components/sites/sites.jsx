@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {connect} from 'react-redux';
 import {Button} from '@oliasoft-open-source/react-ui-library';
 import {sitesLoaded, sitesReceived} from "store/entities/sites/sites";
-import { SkeletonSitesGrid, SkeletonButton } from '../skeleton';
+import { SkeletonSitesGrid, SkeletonButton } from '../skeleton/skeleton';
 import styles from './sites.module.less';
 import { useNavigate } from 'react-router-dom';
 
