@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chart } from 'client/components/chart';
+import { Chart } from 'client/components/chart/chart';
 import { Button, Page } from '@oliasoft-open-source/react-ui-library';
 
 export const ChartView = () => {
